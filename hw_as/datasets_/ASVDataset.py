@@ -39,5 +39,5 @@ class ASVDataset(Dataset):
     def __getitem__(self, idx):
         return {
             "target": 1 if self.audio2target[idx][-1] == "bonafide" else 0,
-            "audio": torchaudio.load(self.path_to_audio + "/" + self.audio2target[idx][0])
+            "audio": torchaudio.load(self.path_to_audio + "/" + self.audio2target[idx][0])[0]
         }
