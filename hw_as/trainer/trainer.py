@@ -157,7 +157,6 @@ class Trainer(BaseTrainer):
             ):
                 batch = self.process_batch(
                     batch,
-                    batch_idx,
                     is_train=False,
                     metrics=self.evaluation_metrics,
                 )
