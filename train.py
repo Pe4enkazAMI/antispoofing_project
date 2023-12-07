@@ -54,7 +54,12 @@ def main(cfg: DictConfig):
     # disabling scheduler
     params = model.parameters()
     optimizer = instantiate(cfg["optimizer"], params=params)
-    lr_scheduler = instantiate(cfg["lr_scheduler"], optimizer=optimizer)
+    
+    lrsched = cfg.get("lr_scheduler", None)
+    if lrsched is not None:
+        lr_scheduler = instantiate(cfg["lr_scheduler"], optimizer=optimizer)
+    else: 
+        lr_scheduler = None
     print("OPT AND LR SETUP COMPLETED...")
 
     trainer = Trainer(
