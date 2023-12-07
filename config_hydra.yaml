@@ -3,17 +3,17 @@ n_gpu: 1
 preprocessing:
   sr: 16000
 arch:
-  _target_: hw_tts.model.RawNet2
+  _target_: hw_as.model.RawNet2
 
 train_ds:
-  _target_: hw_tts.datasets_.ASVDataset
+  _target_: hw_as.datasets_.ASVDataset
   part: "train"
   cm_protocls_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA_cm_protocols"
   data_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA"
   limit: 10
 
 eval_ds:
-  _target_: hw_tts.datasets_.ASVDataset
+  _target_: hw_as.datasets_.ASVDataset
   part: "train"
   cm_protocls_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA_cm_protocols"
   data_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA"
@@ -45,7 +45,7 @@ gen_optimizer:
   amsgrad: true
     
 Loss:
-  _target_: hw_tts.loss.ASLosss
+  _target_: hw_as.loss.ASLosss
 
 
 trainer: 
