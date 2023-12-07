@@ -38,7 +38,7 @@ data:
     datasets:
       - ${eval_ds}
           
-gen_optimizer:
+optimizer:
   _target_: torch.optim.Adam
   lr: 0.001
   weight_decay: 1e-4
