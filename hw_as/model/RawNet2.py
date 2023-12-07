@@ -49,7 +49,8 @@ class RawNet2(nn.Module):
         
         self.sig = nn.Sigmoid()
         
-    def forward(self, x, is_test=False):
+    def forward(self, audio, is_test=False, *args, **kwargs):
+        x = audio
         nb_samp = x.shape[0]
         len_seq = x.shape[1]
         x = self.ln(x)
