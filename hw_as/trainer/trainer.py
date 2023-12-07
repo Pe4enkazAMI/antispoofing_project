@@ -54,9 +54,9 @@ class Trainer(BaseTrainer):
         
 
         self.train_metrics = MetricTracker(
-            "Loss", "grad_norm", writer=self.writer
+            "ASLoss", "grad_norm", writer=self.writer
         )
-        self.evaluation_metrics = MetricTracker("Loss", writer=self.writer)
+        self.evaluation_metrics = MetricTracker("ASLoss", writer=self.writer)
 
     @staticmethod
     def move_batch_to_device(batch, device: torch.device):
@@ -133,7 +133,9 @@ class Trainer(BaseTrainer):
             val_log = self._evaluation_epoch(epoch, part, dataloader)
             log.update(**{f"{part}_{name}": value for name, value in val_log.items()})
 
-        self._log_audio(batch['audio'][0], 22050, f'Train_class={batch["targets"][0]}_predicted={batch["logits"].argmax(-1)[0]}.wav')
+        self._log_audio(batch['audio'][0],
+                         16000,
+                           f'Train_class={batch["targets"][0]}_predicted={batch["logits"].argmax(-1)[0]}.wav')
 
         return log
     
@@ -171,11 +173,10 @@ class Trainer(BaseTrainer):
         if is_train:
             self.optimizer.zero_grad()
             loss = self.criterion(**batch)
-            
-            loss["ASLoss"].backward()
+            batch.update(loss)
+            batch["ASLoss"].backward()
             metrics.update("grad_norm", self.get_grad_norm())
             self.optimizer.step()
-            batch.update(loss)
 
             for key in self.loss_keys:
                 metrics.update(key, batch[key].item())
@@ -183,10 +184,6 @@ class Trainer(BaseTrainer):
             loss = self.criterion(**batch)
             for key in self.loss_keys:
                 metrics.update(key, batch[key].item())
-
-
-
-            
         return batch
 
     def _progress(self, batch_idx):
