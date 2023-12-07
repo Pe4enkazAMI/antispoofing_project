@@ -45,7 +45,7 @@ gen_optimizer:
   amsgrad: true
     
 Loss:
-  _target_: hw_as.loss.ASLosss
+  _target_: hw_as.loss.ASLoss
 
 
 trainer: 
