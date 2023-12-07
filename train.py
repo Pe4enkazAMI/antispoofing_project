@@ -61,6 +61,7 @@ def main(cfg: DictConfig):
     else: 
         lr_scheduler = None
     print("OPT AND LR SETUP COMPLETED...")
+    print(len(dataloaders["train"]))
 
     trainer = Trainer(
         model=model,
