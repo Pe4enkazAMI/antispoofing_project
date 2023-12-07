@@ -1,0 +1,65 @@
+name: "train"
+n_gpu: 1
+preprocessing:
+  sr: 16000
+arch:
+  _target_: hw_tts.model.RawNet2
+
+train_ds:
+  _target_: hw_tts.datasets_.ASVDataset
+  part: "train"
+  cm_protocls_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA_cm_protocols"
+  data_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA"
+  limit: 10
+
+eval_ds:
+  _target_: hw_tts.datasets_.ASVDataset
+  part: "train"
+  cm_protocls_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA_cm_protocols"
+  data_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA"
+  limit: 10
+
+  
+
+# dev_ds:
+#   _target_: hw_tts.datasets_.ASVDataset
+#   cm_protocls_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA_cm_protocols"
+#   data_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA"      
+
+data:
+  train:
+    batch_size: 10
+    num_workers: 6
+    datasets: 
+      - ${train_ds}
+  eval:
+    batch_size: 10
+    num_workers: 6
+    datasets:
+      - ${eval_ds}
+          
+gen_optimizer:
+  _target_: torch.optim.Adam
+  lr: 0.001
+  weight_decay: 1e-4
+  amsgrad: true
+    
+Loss:
+  _target_: hw_tts.loss.ASLosss
+
+
+trainer: 
+  epochs: 3000
+  save_dir: "saved/"
+  save_period: 8
+  verbosity: 2
+  monitor: "off"
+  early_stop: 500
+  visualize: "wandb"
+  wandb_project: "AS_project"
+  run_name: "RawNet"
+  sample_rate: 16000
+  len_epoch: 1000
+  log_step: 50
+  grad_norm_clip: 100
+  finetune: false
