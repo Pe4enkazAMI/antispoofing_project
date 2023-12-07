@@ -110,7 +110,7 @@ class Trainer(BaseTrainer):
                 self.writer.set_step((epoch - 1) * self.len_epoch + batch_idx)
                 self.logger.debug(
                     f"Train Epoch: {epoch} {self._progress(batch_idx)} \
-                        Loss: {batch['Loss'].item()}"
+                        ASLoss: {batch['ASLoss'].item()}"
                 )
                 self.writer.add_scalar(
                     "learning rate", self.lr_scheduler.get_last_lr()[0]
