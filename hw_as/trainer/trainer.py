@@ -112,9 +112,10 @@ class Trainer(BaseTrainer):
                     f"Train Epoch: {epoch} {self._progress(batch_idx)} \
                         ASLoss: {batch['ASLoss'].item()}"
                 )
-                self.writer.add_scalar(
-                    "learning rate", self.lr_scheduler.get_last_lr()[0]
-                )
+                if self.lr_scheduler is not None:
+                    self.writer.add_scalar(
+                        "learning rate", self.lr_scheduler.get_last_lr()[0]
+                    )
                 
                 self._log_scalars(self.train_metrics)
                 last_train_metrics = self.train_metrics.result()
