@@ -33,6 +33,9 @@ class ASVDataset(Dataset):
         
         self.audio2target = list(map(lambda x: (x.split(" ")[1] + ".flac", x.split(" ")[-1][:-1]), self.protocols))
 
+        if self.limit is not None:
+            self.audio2target = self.audio2target[:limit]
+
     def __len__(self):
         return len(self.audio2target)
 
