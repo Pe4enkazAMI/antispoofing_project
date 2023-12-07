@@ -182,6 +182,7 @@ class Trainer(BaseTrainer):
                 metrics.update(key, batch[key].item())
         else:
             loss = self.criterion(**batch)
+            batch.update(loss)
             for key in self.loss_keys:
                 metrics.update(key, batch[key].item())
         return batch
