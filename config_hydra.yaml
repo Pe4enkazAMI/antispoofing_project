@@ -10,33 +10,37 @@ train_ds:
   part: "train"
   cm_protocls_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA_cm_protocols"
   data_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA"
-  limit: 10
 
 eval_ds:
   _target_: hw_as.datasets_.ASVDataset
-  part: "train"
+  part: "eval"
   cm_protocls_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA_cm_protocols"
   data_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA"
-  limit: 10
 
   
 
-# dev_ds:
-#   _target_: hw_tts.datasets_.ASVDataset
-#   cm_protocls_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA_cm_protocols"
-#   data_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA"      
+dev_ds:
+  _target_: hw_tts.datasets_.ASVDataset
+  part: "dev"
+  cm_protocls_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA_cm_protocols"
+  data_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA"      
 
 data:
   train:
-    batch_size: 10
+    batch_size: 64
     num_workers: 6
     datasets: 
       - ${train_ds}
   eval:
-    batch_size: 10
+    batch_size: 64
     num_workers: 6
     datasets:
       - ${eval_ds}
+  dev:
+    batch_size: 64
+    num_workers: 6
+    datasets:
+      - ${dev_ds}
           
 optimizer:
   _target_: torch.optim.Adam
@@ -46,6 +50,9 @@ optimizer:
     
 Loss:
   _target_: hw_as.loss.ASLoss
+
+Metric:
+  _target_: hw_as.metrics.EERMetric
 
 
 trainer: 

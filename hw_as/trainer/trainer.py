@@ -4,6 +4,7 @@ from hw_as.base import BaseTrainer
 from hw_as.utils import MetricTracker, inf_loop
 from torch.nn.utils import clip_grad_norm_
 from tqdm import tqdm
+import numpy as np
 
 
 
@@ -21,6 +22,8 @@ class Trainer(BaseTrainer):
             config,
             device,
             dataloaders,
+            ckpt_dir,
+            metric,
             lr_scheduler=None,
             len_epoch=None,
             skip_oom=True,
@@ -31,12 +34,14 @@ class Trainer(BaseTrainer):
                          optimizer=optimizer,
                          lr_shceduler=lr_scheduler,
                          config=config,
-                         device=device)
+                         device=device,
+                         ckpt_dir=ckpt_dir)
         
         self.skip_oom = skip_oom
         self.config = config
         self.train_dataloader = dataloaders["train"]
         self.device = device
+        self.metric = metric
         if len_epoch is None:
             # epoch-based training
             self.len_epoch = len(self.train_dataloader)
@@ -56,7 +61,7 @@ class Trainer(BaseTrainer):
         self.train_metrics = MetricTracker(
             "ASLoss", "grad_norm", writer=self.writer
         )
-        self.evaluation_metrics = MetricTracker("ASLoss", writer=self.writer)
+        self.evaluation_metrics = MetricTracker("ASLoss", "EERMetric", writer=self.writer)
 
     @staticmethod
     def move_batch_to_device(batch, device: torch.device):
@@ -149,6 +154,7 @@ class Trainer(BaseTrainer):
         """
         self.model.eval()
         self.evaluation_metrics.reset()
+        preds, labels = [], []
         with torch.no_grad():
             for batch_idx, batch in tqdm(
                     enumerate(dataloader),
@@ -160,6 +166,14 @@ class Trainer(BaseTrainer):
                     is_train=False,
                     metrics=self.evaluation_metrics,
                 )
+
+                preds = preds + batch["logits"].detach().cpu()[:, 1].tolist()
+                labels = labels + batch["targets"].detach().cpu().tolist()
+            
+            self.evaluation_metrics.update('EERMetric', self.metric(np.array(preds), np.array(labels)))
+            self.evaluation_metrics.update("ASLoss", batch["ASLoss"], n=64)
+
+
             self.writer.set_step(epoch * self.len_epoch, part)
             self._log_scalars(self.evaluation_metrics)
 

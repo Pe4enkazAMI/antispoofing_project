@@ -16,7 +16,8 @@ class BaseTrainer:
                  optimizer, 
                  lr_shceduler,
                  config, 
-                 device):
+                 device,
+                 ckpt_dir):
         self.device = device
         self.config = config
         self.logger = logging.getLogger("trainer")
@@ -24,6 +25,7 @@ class BaseTrainer:
         self.model = model
         self.criterion = criterion
         self.optimizer = optimizer
+        self.ckpt_dir = ckpt_dir
 
 
         # for interrupt saving
@@ -49,7 +51,7 @@ class BaseTrainer:
 
         self.start_epoch = 1
 
-        self.checkpoint_dir = cfg_trainer["save_dir"]
+        self.checkpoint_dir = self.ckpt_dir
 
         # setup visualization writer instance
         self.writer = get_visualizer(
@@ -143,15 +145,25 @@ class BaseTrainer:
         :param save_best: if True, rename the saved checkpoint to 'model_best.pth'
         """
         arch = type(self.model).__name__
-        state = {
-            "arch": arch,
-            "epoch": epoch,
-            "state_dict": self.model.state_dict(),
-            "optimizer": self.optimizer.state_dict(),
-            "lr_scheduler": self.lr_scheduler.state_dict(),
-            "monitor_best": self.mnt_best,
-            "config": self.config,
-        }
+        if self.lr_scheduler is not None:
+            state = {
+                "arch": arch,
+                "epoch": epoch,
+                "state_dict": self.model.state_dict(),
+                "optimizer": self.optimizer.state_dict(),
+                "lr_scheduler": self.lr_scheduler.state_dict(),
+                "monitor_best": self.mnt_best,
+                "config": self.config,
+            }
+        else:
+            state = {
+                "arch": arch,
+                "epoch": epoch,
+                "state_dict": self.model.state_dict(),
+                "optimizer": self.optimizer.state_dict(),
+                "monitor_best": self.mnt_best,
+                "config": self.config,
+            }
         filename = str(self.checkpoint_dir / "checkpoint-epoch{}.pth".format(epoch))
         filename_only_dict = str(self.checkpoint_dir / "dict_checkpoint-epoch{}.pth".format(epoch))
         if not (only_best and save_best):

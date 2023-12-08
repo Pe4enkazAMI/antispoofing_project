@@ -4,8 +4,8 @@ import torch
 import sys 
 import os 
 import logging
-
-
+from pathlib import Path
+import datetime
 
 from hw_as.trainer import Trainer
 from hw_as.utils import prepare_device
@@ -48,6 +48,7 @@ def main(cfg: DictConfig):
         model = torch.nn.DataParallel(model, device_ids=device_ids)
 
     # get function handles of loss and metrics
+    metric = instantiate(cfg["Metric"])
     loss = instantiate(cfg["Loss"]).to(device)
     print("LOSS SETUP COMPLETED...")
     # build optimizer, learning rate scheduler. delete every line containing lr_scheduler for
@@ -61,7 +62,20 @@ def main(cfg: DictConfig):
     else: 
         lr_scheduler = None
     print("OPT AND LR SETUP COMPLETED...")
-    print(len(dataloaders["train"]))
+
+
+
+    save_dir = Path(cfg["trainer"]["save_dir"])
+    exper_name = cfg["name"]
+    if run_id is None:  # use timestamp as default run-id
+        run_id = datetime.now().strftime(r"%m%d_%H%M%S")
+    _save_dir = str(save_dir / "models" / exper_name / run_id)
+    _log_dir = str(save_dir / "log" / exper_name / run_id)
+
+    # make directory for saving checkpoints and log.
+    exist_ok = run_id == ""
+    save_dir.mkdir(parents=True, exist_ok=exist_ok)
+    Path(_log_dir).mkdir(parents=True, exist_ok=exist_ok)
 
     trainer = Trainer(
         model=model,
@@ -71,7 +85,9 @@ def main(cfg: DictConfig):
         device=device,
         dataloaders=dataloaders,
         lr_scheduler=lr_scheduler,
-        len_epoch=cfg["trainer"].get("len_epoch", None)
+        metric=metric,
+        len_epoch=cfg["trainer"].get("len_epoch", None),
+        ckpt_dir=_save_dir
     )
     trainer.train()
 
