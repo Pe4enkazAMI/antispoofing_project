@@ -72,9 +72,9 @@ def main(cfg: DictConfig):
     _log_dir = str(save_dir / "log" / exper_name / run_id)
 
     # make directory for saving checkpoints and log.
-    exist_ok = run_id == ""
-    save_dir.mkdir(parents=True, exist_ok=exist_ok)
-    Path(_log_dir).mkdir(parents=True, exist_ok=exist_ok)
+
+    save_dir.mkdir(parents=True, exist_ok=True)
+    Path(_log_dir).mkdir(parents=True, exist_ok=True)
 
     trainer = Trainer(
         model=model,
