@@ -1,4 +1,4 @@
-name: "train"
+name: "RawNet2_train"
 n_gpu: 1
 preprocessing:
   sr: 16000
@@ -57,7 +57,7 @@ Metric:
 trainer: 
   epochs: 120
   save_dir: "saved/"
-  save_period: 1
+  save_period: 8
   verbosity: 2
   monitor: "off"
   early_stop: 500
@@ -65,7 +65,7 @@ trainer:
   wandb_project: "AS_project"
   run_name: "RawNet"
   sample_rate: 16000
-  len_epoch: 1
+  len_epoch: 1500
   log_step: 50
   grad_norm_clip: 10
   finetune: false
