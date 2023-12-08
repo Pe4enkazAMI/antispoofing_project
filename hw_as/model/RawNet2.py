@@ -3,6 +3,7 @@ from .raw_net_blocks.ResBlock import ResBlock
 from .raw_net_blocks.SincConv import SincConv_fast
 import torch.nn.functional as F
 import torch
+import numpy as np
 
 
 class RawNet2(nn.Module):
@@ -79,3 +80,12 @@ class RawNet2(nn.Module):
         code = torch.div(code, code_norm)
         out = self.fc2_gru(code)
         return {"logits": out}
+    
+
+    def __str__(self):
+        """
+        Model prints with number of trainable parameters
+        """
+        model_parameters = filter(lambda p: p.requires_grad, self.parameters())
+        params = sum([np.prod(p.size()) for p in model_parameters])
+        return super().__str__() + "\nTrainable parameters: {}".format(params)
