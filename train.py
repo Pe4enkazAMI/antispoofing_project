@@ -67,8 +67,7 @@ def main(cfg: DictConfig):
 
     save_dir = Path(cfg["trainer"]["save_dir"])
     exper_name = cfg["name"]
-    if run_id is None:  # use timestamp as default run-id
-        run_id = datetime.now().strftime(r"%m%d_%H%M%S")
+    run_id = datetime.now().strftime(r"%m%d_%H%M%S")
     _save_dir = str(save_dir / "models" / exper_name / run_id)
     _log_dir = str(save_dir / "log" / exper_name / run_id)
 
