@@ -170,6 +170,9 @@ class Trainer(BaseTrainer):
                 preds = preds + batch["logits"].detach().cpu()[:, 1].tolist()
                 labels = labels + batch["targets"].detach().cpu().tolist()
             
+
+            print("PREDS", preds)
+            print("lables", preds)
             self.evaluation_metrics.update('EERMetric', self.metric(np.array(preds), np.array(labels)))
             self.evaluation_metrics.update("ASLoss", batch["ASLoss"], n=64)
 
