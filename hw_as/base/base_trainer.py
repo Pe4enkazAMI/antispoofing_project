@@ -164,8 +164,8 @@ class BaseTrainer:
                 "monitor_best": self.mnt_best,
                 "config": self.config,
             }
-        filename = str(self.checkpoint_dir / "checkpoint-epoch{}.pth".format(epoch))
-        filename_only_dict = str(self.checkpoint_dir / "dict_checkpoint-epoch{}.pth".format(epoch))
+        filename = str(self.checkpoint_dir)  + "/" + "checkpoint-epoch{}.pth".format(epoch)
+        filename_only_dict = str(self.checkpoint_dir) + "/" "dict_checkpoint-epoch{}.pth".format(epoch)
         if not (only_best and save_best):
             torch.save(state, filename, _use_new_zipfile_serialization=False)
             torch.save(self.model.state_dict(), filename_only_dict, _use_new_zipfile_serialization=False)

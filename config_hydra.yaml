@@ -57,7 +57,7 @@ Metric:
 trainer: 
   epochs: 120
   save_dir: "saved/"
-  save_period: 8
+  save_period: 5
   verbosity: 2
   monitor: "off"
   early_stop: 500
