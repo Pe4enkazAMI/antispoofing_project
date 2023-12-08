@@ -20,7 +20,7 @@ eval_ds:
   
 
 dev_ds:
-  _target_: hw_tts.datasets_.ASVDataset
+  _target_: hw_as.datasets_.ASVDataset
   part: "dev"
   cm_protocls_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA_cm_protocols"
   data_path: "/kaggle/input/asvpoof-2019-dataset/LA/LA/ASVspoof2019_LA"      
