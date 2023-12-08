@@ -5,7 +5,7 @@ import sys
 import os 
 import logging
 from pathlib import Path
-import datetime
+from datetime import datetime
 
 from hw_as.trainer import Trainer
 from hw_as.utils import prepare_device
