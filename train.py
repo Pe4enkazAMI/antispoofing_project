@@ -73,7 +73,7 @@ def main(cfg: DictConfig):
 
     # make directory for saving checkpoints and log.
 
-    save_dir.mkdir(parents=True, exist_ok=True)
+    Path(_save_dir).mkdir(parents=True, exist_ok=True)
     Path(_log_dir).mkdir(parents=True, exist_ok=True)
 
     trainer = Trainer(
