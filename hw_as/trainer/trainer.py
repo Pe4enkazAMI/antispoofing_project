@@ -171,10 +171,8 @@ class Trainer(BaseTrainer):
                 labels = labels + batch["targets"].detach().cpu().tolist()
             
 
-            print("PREDS", preds)
-            print("lables", preds)
-            self.evaluation_metrics.update('EERMetric', self.metric(np.array(preds), np.array(labels)))
-            self.evaluation_metrics.update("ASLoss", batch["ASLoss"], n=64)
+            self.evaluation_metrics.update('EERMetric', self.metric(np.array(labels), np.array(preds)))
+            self.evaluation_metrics.update("ASLoss", batch["ASLoss"], n=32)
 
 
             self.writer.set_step(epoch * self.len_epoch, part)

@@ -49,4 +49,7 @@ class EERMetric:
         return eer, thresholds[min_index]
     
     def __call__(self, target, pred, *args, **kwargs) -> Any:
-        return self.compute_eer(pred[target == 1], pred[target == 0])[0]
+        bonafide = pred[target == 1]
+        fake = pred[target == 0]
+        print(target.shape, pred.shape, target.sum())
+        return self.compute_eer(bonafide, fake)[0]

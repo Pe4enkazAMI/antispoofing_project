@@ -27,26 +27,25 @@ dev_ds:
 
 data:
   train:
-    batch_size: 64
+    batch_size: 32
     num_workers: 6
     datasets: 
       - ${train_ds}
   eval:
-    batch_size: 64
+    batch_size: 32
     num_workers: 6
     datasets:
       - ${eval_ds}
   dev:
-    batch_size: 64
+    batch_size: 32
     num_workers: 6
     datasets:
       - ${dev_ds}
           
 optimizer:
   _target_: torch.optim.Adam
-  lr: 0.001
+  lr: 0.0001
   weight_decay: 1e-4
-  amsgrad: true
     
 Loss:
   _target_: hw_as.loss.ASLoss
@@ -56,7 +55,7 @@ Metric:
 
 
 trainer: 
-  epochs: 3000
+  epochs: 120
   save_dir: "saved/"
   save_period: 8
   verbosity: 2
@@ -66,7 +65,7 @@ trainer:
   wandb_project: "AS_project"
   run_name: "RawNet"
   sample_rate: 16000
-  len_epoch: 1000
+  len_epoch: 1
   log_step: 50
   grad_norm_clip: 100
   finetune: false
