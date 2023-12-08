@@ -57,7 +57,7 @@ Metric:
 trainer: 
   epochs: 120
   save_dir: "saved/"
-  save_period: 5
+  save_period: 1
   verbosity: 2
   monitor: "off"
   early_stop: 500
@@ -65,7 +65,7 @@ trainer:
   wandb_project: "AS_project"
   run_name: "RawNet"
   sample_rate: 16000
-  len_epoch: 1500
+  len_epoch: 1
   log_step: 50
   grad_norm_clip: 10
   finetune: false
