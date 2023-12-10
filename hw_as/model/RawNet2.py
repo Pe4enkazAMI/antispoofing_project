@@ -9,8 +9,8 @@ import numpy as np
 class RawNet2(nn.Module):
     def __init__(self, 
                  in_channels_sinc=1, 
-                 filts = [20, [20, 20], [20, 128], [128, 128]], 
-                 ks_conv_sinc=1024, 
+                 filts = [128, [128, 128], [128, 512], [512, 512]], 
+                 ks_conv_sinc=129, 
                  gru_node=1024,
                  num_gru_layers=3,
                  num_fc_feats=1024,
