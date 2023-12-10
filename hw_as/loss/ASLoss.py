@@ -6,7 +6,7 @@ import torch.nn as nn
 
 class ASLoss(nn.CrossEntropyLoss):
     def __init__(self, 
-                 weight: Tensor | None = torch.tensor([1.0, 9.0]),
+                 weight: Tensor | None = torch.tensor([1.0, 1.0]),
                  size_average=None, 
                  ignore_index: int = -100, 
                  reduce=None, 

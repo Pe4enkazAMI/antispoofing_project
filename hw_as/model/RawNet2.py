@@ -67,8 +67,8 @@ class RawNet2(nn.Module):
         x = self.block4(x)
         x = self.block5(x)
 
-        # x = self.bn_before_gru(x)
-        # x = self.lrelu_keras(x)
+        x = self.bn_before_gru(x)
+        x = self.lrelu_keras(x)
         x = x.permute(0, 2, 1)  #(batch, filt, time) >> (batch, time, filt)
         self.gru.flatten_parameters()
         x, _ = self.gru(x)
