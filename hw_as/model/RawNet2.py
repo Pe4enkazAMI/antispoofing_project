@@ -50,7 +50,7 @@ class RawNet2(nn.Module):
         
         self.sig = nn.Sigmoid()
         
-    def forward(self, audio, is_test=False, *args, **kwargs):
+    def forward(self, audio, *args, **kwargs):
         x = audio
         nb_samp = x.shape[0]
         len_seq = x.shape[1]
@@ -74,8 +74,6 @@ class RawNet2(nn.Module):
         x, _ = self.gru(x)
         x = x[:,-1,:]
         code = self.fc1_gru(x)
-        if is_test: 
-            return {"logits": code}
         code_norm = code.norm(p=2,dim=1, keepdim=True) / 10.
         code = torch.div(code, code_norm)
         out = self.fc2_gru(code)
