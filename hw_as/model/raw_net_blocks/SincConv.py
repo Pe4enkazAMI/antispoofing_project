@@ -80,7 +80,8 @@ class SincConv_fast(nn.Module):
         mel = np.linspace(low_hz,
                           high_hz,
                           self.out_channels + 1)
-        hz = self.to_hz(mel)
+        # hz = self.to_hz(mel)
+        hz = mel
 
 
         # filter lower frequency (out_channels, 1)

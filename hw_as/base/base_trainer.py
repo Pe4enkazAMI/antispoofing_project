@@ -132,7 +132,7 @@ class BaseTrainer:
                     )
                     break
 
-            if epoch % self.save_period == 0:
+            if (epoch % self.save_period == 0) or best:
                 ckpt_path = self._save_checkpoint(epoch, save_best=best, only_best=True)
                 artifact_tag = "best" if best else "ckpt"
                 self.writer.add_ckpt(f'{self.config["name"]}_{artifact_tag}', ckpt_path)
