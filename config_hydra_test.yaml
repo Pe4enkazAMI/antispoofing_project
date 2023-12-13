@@ -1,0 +1,10 @@
+name: "RawNet2_test"
+n_gpu: 1
+preprocessing:
+  sr: 16000
+arch:
+  _target_: hw_as.model.RawNet2
+    
+resume: "/Users/bayesian_monster/Downloads/RawNetE122.pth"
+
+test_data_path: "/Users/bayesian_monster/anti_spoofing_project/test_data"

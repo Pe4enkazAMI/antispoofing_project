@@ -40,7 +40,6 @@ class RawNet2(nn.Module):
             hidden_size = gru_node,
             num_layers = num_gru_layers,
             batch_first = True)
-
         
         self.fc1_gru = nn.Linear(in_features = gru_node,
             out_features = num_fc_feats)
@@ -70,7 +69,6 @@ class RawNet2(nn.Module):
         x = self.bn_before_gru(x)
         x = self.lrelu_keras(x)
         x = x.permute(0, 2, 1)  #(batch, filt, time) >> (batch, time, filt)
-        self.gru.flatten_parameters()
         x, _ = self.gru(x)
         x = x[:,-1,:]
         code = self.fc1_gru(x)
