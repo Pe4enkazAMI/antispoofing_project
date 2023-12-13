@@ -22,20 +22,35 @@ class RawNet2(nn.Module):
             kernel_size = ks_conv_sinc
             )
 
-        self.first_bn = nn.BatchNorm1d(num_features = filts[0])
-        self.lrelu_keras = nn.LeakyReLU(negative_slope = 0.3)
+        # self.first_bn = nn.BatchNorm1d(num_features = filts[0])
+        # self.lrelu_keras = nn.LeakyReLU(negative_slope = 0.3)
         
-        self.block0 = nn.Sequential(ResBlock(emb_dims = filts[1], first = True))
-        self.block1 = nn.Sequential(ResBlock(emb_dims = filts[1]))
+        # self.block0 = nn.Sequential(ResBlock(emb_dims = filts[1], first = True))
+        # self.block1 = nn.Sequential(ResBlock(emb_dims = filts[1]))
  
-        self.block2 = nn.Sequential(ResBlock(emb_dims = filts[2]))
-        filts[2][0] = filts[2][1]
-        self.block3 = nn.Sequential(ResBlock(emb_dims = filts[2]))
-        self.block4 = nn.Sequential(ResBlock(emb_dims = filts[2]))
-        self.block5 = nn.Sequential(ResBlock(emb_dims = filts[2]))
-        self.avgpool = nn.AdaptiveAvgPool1d(1)
+        # self.block2 = nn.Sequential(ResBlock(emb_dims = filts[2]))
+        self.prejump = nn.Sequential(
+            nn.BatchNorm1d(num_features = filts[0]),
+            nn.LeakyReLU(negative_slope = 0.3),
+            ResBlock(emb_dims = filts[1], first = True),
+            ResBlock(emb_dims = filts[1]),
+            ResBlock(emb_dims = filts[2])
+        )
 
-        self.bn_before_gru = nn.BatchNorm1d(num_features = filts[2][-1])
+        filts[2][0] = filts[2][1]
+        self.afjump = nn.Sequential(
+            ResBlock(emb_dims = filts[2]),
+            ResBlock(emb_dims = filts[2]),
+            ResBlock(emb_dims = filts[2]),
+            nn.BatchNorm1d(num_features = filts[2][-1]),
+            nn.LeakyReLU(negative_slope = 0.3)
+        )
+        # self.block3 = nn.Sequential(ResBlock(emb_dims = filts[2]))
+        # self.block4 = nn.Sequential(ResBlock(emb_dims = filts[2]))
+        # self.block5 = nn.Sequential(ResBlock(emb_dims = filts[2]))
+        # self.avgpool = nn.AdaptiveAvgPool1d(1)
+
+        # self.bn_before_gru = nn.BatchNorm1d(num_features = filts[2][-1])
         self.gru = nn.GRU(input_size = filts[2][-1],
             hidden_size = gru_node,
             num_layers = num_gru_layers,
@@ -47,27 +62,27 @@ class RawNet2(nn.Module):
             out_features = num_classes,
             bias = True)
         
-        self.sig = nn.Sigmoid()
-        
     def forward(self, audio, *args, **kwargs):
         x = audio
         nb_samp = x.shape[0]
         len_seq = x.shape[1]
         x = x.view(nb_samp, 1,len_seq)
-        x = F.max_pool1d(torch.abs(self.first_conv(x)), 3)
-        x = self.first_bn(x)
-        x = self.lrelu_keras(x)
+        x = F.max_pool1d(self.first_conv(x), 3)
+        # x = self.first_bn(x)
+        # x = self.lrelu_keras(x)
         
-        x = self.block0(x)
-        x = self.block1(x)
+        # x = self.block0(x)
+        # x = self.block1(x)
 
-        x = self.block2(x)
-        x = self.block3(x)
-        x = self.block4(x)
-        x = self.block5(x)
+        # x = self.block2(x)
+        x = self.prejump(x)
+        # x = self.block3(x)
+        # x = self.block4(x)
+        # x = self.block5(x)
 
-        x = self.bn_before_gru(x)
-        x = self.lrelu_keras(x)
+        # x = self.bn_before_gru(x)
+        # x = self.lrelu_keras(x)
+        x = self.afjump(x)
         x = x.permute(0, 2, 1)  #(batch, filt, time) >> (batch, time, filt)
         x, _ = self.gru(x)
         x = x[:,-1,:]
