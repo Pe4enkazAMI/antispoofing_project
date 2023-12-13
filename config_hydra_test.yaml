@@ -5,6 +5,6 @@ preprocessing:
 arch:
   _target_: hw_as.model.RawNet2
     
-resume: "/Users/bayesian_monster/Downloads/RawNetE122.pth"
+resume: "/Users/bayesian_monster/Downloads/FinalRawNet.pth"
 
 test_data_path: "/Users/bayesian_monster/anti_spoofing_project/test_data"
